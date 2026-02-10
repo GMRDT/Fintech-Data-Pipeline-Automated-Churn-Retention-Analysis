@@ -1,0 +1,24 @@
+name: Robot_Fintech_Diario
+on:
+  workflow_dispatch: # Esto permite que lo corras manualmente para probar
+  schedule:
+    - cron: '0 10 * * *' # Corre automáticamente una vez al día
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install psycopg2-binary
+      - name: Run script
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+        run: python data_generator.py
